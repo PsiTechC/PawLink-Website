@@ -1,0 +1,27 @@
+# PawLink contact backend — systemd unit
+# Place at: /etc/systemd/system/pawlink-backend.service
+# Then:     sudo systemctl daemon-reload && sudo systemctl enable --now pawlink-backend
+#
+# Adjust ExecStart if `which node` reports a different path (e.g. an nvm install).
+# The app reads its config from .env in WorkingDirectory (via dotenv).
+
+[Unit]
+Description=PawLink contact form backend (Node/Express + Nodemailer)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/pawlink-backend
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+User=www-data
+Group=www-data
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
