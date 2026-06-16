@@ -1,0 +1,29 @@
+# PawLink — Docker stack
+#   backend : Node/Express contact API (not published; reached only by `web`)
+#   web     : nginx serving the static page + proxying /api -> backend
+#
+# `web` is published on host port 8080. Your existing host nginx terminates
+# SSL for pawlink.psitech.co.in and proxies to http://127.0.0.1:8080
+# (see deploy/docker/nginx-host.conf).
+#
+# Change HOST_WEB_PORT if 8080 is taken:  HOST_WEB_PORT=8090 docker compose up -d
+
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env          # create on the VPS from backend/.env.example (holds SMTP_PASS)
+    expose:
+      - "3000"
+
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${HOST_WEB_PORT:-8080}:80"
+    volumes:
+      - ./deploy/docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - "./PawLink (standalone).html:/usr/share/nginx/html/index.html:ro"
