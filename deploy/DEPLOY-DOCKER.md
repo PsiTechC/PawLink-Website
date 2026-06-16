@@ -1,7 +1,7 @@
 # Deploying PawLink with Docker (pawlink.psitech.co.in)
 
 Docker runs the app (Node backend + an nginx that serves the page and routes
-`/api`) on host port **8080**. Your existing **host nginx** terminates SSL for
+`/api`) on host port **8095**. Your existing **host nginx** terminates SSL for
 the domain and proxies to it.
 
 Prereqs on the VPS: Docker Engine + Docker Compose plugin, nginx, certbot.
@@ -37,8 +37,8 @@ sudo docker compose logs -f backend
 ```
 Local check on the VPS:
 ```bash
-curl http://localhost:8080/api/health     # -> {"ok":true,"smtp":"connected"}
-curl -I http://localhost:8080/            # -> 200, serves the page
+curl http://localhost:8095/api/health     # -> {"ok":true,"smtp":"connected"}
+curl -I http://localhost:8095/            # -> 200, serves the page
 ```
 
 ## 5. Host nginx -> Docker, then SSL
@@ -68,8 +68,8 @@ sudo docker compose down
 sudo docker compose logs -f
 
 # Change the published port (if 8080 is taken)
-HOST_WEB_PORT=8090 sudo docker compose up -d
-# (then update proxy_pass in deploy/docker/nginx-host.conf to :8090 and reload nginx)
+HOST_WEB_PORT=8096 sudo docker compose up -d
+# (then update proxy_pass in deploy/docker/nginx-host.conf to :8096 and reload nginx)
 ```
 
 ## Notes
